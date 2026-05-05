@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQUADRADRY - Gestão Industrial</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --admin-color: #8e44ad;
+            --bg-color: #f4f7f6;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; margin: auto; }
+        .admin-container { max-width: 900px; background: white; padding: 20px; border-radius: 8px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        h2 { text-align: center; color: var(--primary-color); }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+
+        .btn-stack { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn-stack button { flex: 1; padding: 10px; cursor: pointer; border: 1px solid var(--accent-color); background: white; border-radius: 4px; }
+        .btn-stack button.active { background: var(--accent-color); color: white; }
+
+        .bloco-componentes { border: 2px solid #eee; padding: 15px; border-radius: 6px; background: #fafafa; margin-bottom: 20px; }
+        
+        .footer-buttons { display: flex; justify-content: center; gap: 20px; }
+        button { cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-save { background: var(--success-color); color: white; border: none; padding: 12px 30px; border-radius: 4px; }
+        .btn-admin { background: var(--admin-color); color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; margin-top: 10px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: var(--primary-color); color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        .hidden { display: none; }
+        .nav-link { text-align: center; margin-top: 15px; cursor: pointer; color: var(--accent-color); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="container">
+        <h2>Acesso ao Sistema</h2>
+        <div class="input-group">
+            <label>Usuário</label>
+            <input type="text" id="user" placeholder="Nome de usuário">
+        </div>
+        <div class="input-group">
+            <label>Senha</label>
+            <input type="password" id="pass" placeholder="Senha">
+        </div>
+        <button class="btn-save" style="width: 100%;" onclick="login()">Entrar</button>
+    </div>
+
+    <!-- TELA DE REGISTRO (MANUTENÇÃO) -->
+    <div id="main-screen" class="container hidden">
+        <h2>Registro de Manutenção Diária</h2>
+        <label>Selecione a Retífica:</label>
+        <div class="btn-stack">
+            <button class="opt-ret" onclick="selectOpt(this, 'ret')">Retífica 1</button>
+            <button class="opt-ret" onclick="selectOpt(this, 'ret')">Retífica 2</button>
+        </div>
+
+        <label>Selecione o Grupo:</label>
+        <div class="btn-stack">
+            <button class="opt-grp" onclick="selectOpt(this, 'grp')">Grupo 1</button>
+            <button class="opt-grp" onclick="selectOpt(this, 'grp')">Grupo 2</button>
+        </div>
+
+        <div class="bloco-componentes">
+            <label>Componente Substituído/Revisado</label>
+            <select id="componente">
+                <option value="Disco">Disco</option>
+                <option value="Mancal">Mancal</option>
+                <option value="Motor">Motor</option>
+                <option value="Acoplamento do Motor">Acoplamento do Motor</option>
+                <option value="Acoplamento Mancal">Acoplamento Mancal</option>
+            </select>
+            <div class="input-group" style="margin-top:15px">
+                <label>Número do Motor</label>
+                <input type="text" id="numMotor" placeholder="Identificação do Motor">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Responsável</label>
+            <input type="text" id="responsavel" placeholder="Nome do responsável">
+        </div>
+
+        <div class="footer-buttons">
+            <button class="btn-save" onclick="salvar()">Salvar Registro</button>
+        </div>
+        <div class="nav-link" onclick="logout()">Sair</div>
+    </div>
+
+    <!-- PAINEL DO ADMIN (SERGIO) -->
+    <div id="admin-panel" class="admin-container hidden">
+        <h2 style="color: var(--admin-color);">Painel Administrativo - Relatórios Detalhados</h2>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Máquina</th>
+                        <th>Grupo</th>
+                        <th>Peça</th>
+                        <th>ID Motor</th>
+                        <th>Responsável</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-relatorios">
+                    <!-- Os dados aparecem aqui -->
+                </tbody>
+            </table>
+        </div>
+        <button class="btn-admin" onclick="logout()">Sair do Painel</button>
+    </div>
+
+    <script>
+        let registros = [];
+        let selecaoAtual = { ret: "", grp: "" };
+
+        function login() {
+            const u = document.getElementById('user').value;
+            const s = document.getElementById('pass').value;
+
+            if(u === "sergio" && s === "sergio") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                carregarTabela();
+            } else if(u === "operador" && s === "123") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-screen').classList.remove('hidden');
+            } else {
+                alert("Acesso negado!");
+            }
+        }
+
+        function selectOpt(btn, tipo) {
+            document.querySelectorAll('.opt-' + tipo).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selecaoAtual[tipo] = btn.innerText;
+        }
+
+        function salvar() {
+            const novoRegistro = {
+                data: new Date().toLocaleString(),
+                retifica: selecaoAtual.ret || "N/A",
+                grupo: selecaoAtual.grp || "N/A",
+                peca: document.getElementById('componente').value,
+                idMotor: document.getElementById('numMotor').value,
+                resp: document.getElementById('responsavel').value
+            };
+
+            if(!novoRegistro.idMotor || !novoRegistro.resp) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            registros.push(novoRegistro);
+            alert("Manutenção salva com sucesso!");
+            limparCampos();
+        }
+
+        function carregarTabela() {
+            const corpo = document.getElementById('tabela-relatorios');
+            corpo.innerHTML = "";
+            registros.forEach(r => {
+                corpo.innerHTML += `<tr>
+                    <td>${r.data}</td>
+                    <td>${r.retifica}</td>
+                    <td>${r.grupo}</td>
+                    <td>${r.peca}</td>
+                    <td>${r.idMotor}</td>
+                    <td>${r.resp}</td>
+                </tr>`;
+            });
+        }
+
+        function limparCampos() {
+            document.getElementById('numMotor').value = "";
+            document.getElementById('responsavel').value = "";
+        }
+
+        function logout() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
