@@ -3,38 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQUADRADRY - Gestão Industrial</title>
+    <title>SQUADRADRY - Sistema Industrial</title>
     <style>
         :root {
             --primary: #2c3e50; --accent: #3498db; --success: #27ae60;
-            --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c; --warning: #f39c12;
+            --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c;
         }
 
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
         .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 900px; margin: 20px auto; }
         
-        h2, h3 { text-align: center; color: var(--primary); margin-top: 0; }
-        .nav-tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-        .tab-btn { padding: 10px 20px; cursor: pointer; border: none; background: #eee; border-radius: 6px; font-weight: bold; }
-        .tab-btn.active { background: var(--accent); color: white; }
+        h2, h3 { text-align: center; color: var(--primary); }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 
-        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; color: #333; }
-        
         /* Botões de Seleção */
         .grid-select { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .btn-opt { padding: 12px; cursor: pointer; border: 2px solid #ddd; background: white; border-radius: 6px; font-weight: 500; transition: 0.2s; text-align: center; }
         .btn-opt.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .btn-check.active { background: var(--warning); color: white; border-color: var(--warning); }
+        .btn-peca.active { background: var(--success); border-color: var(--success); color: white; }
 
-        /* Blocos Separados */
-        .bloco-preventiva { border: 2px solid #e0e0e0; padding: 15px; border-radius: 8px; background: #fdfdfd; margin-bottom: 15px; }
-        .bloco-titulo { font-size: 12px; text-transform: uppercase; color: #7f8c8d; margin-bottom: 10px; font-weight: bold; }
-
-        .btn-save { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        .btn-report { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .bloco { border: 2px solid #f0f0f0; padding: 20px; border-radius: 8px; background: #fafafa; margin-bottom: 15px; }
+        
+        .btn-save { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; }
         .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; float: right; border-radius: 4px; cursor: pointer; }
+        .btn-report { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        /* Tabela e Filtros */
+        .filter-bar { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; background: #eee; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: var(--primary); color: white; }
 
         .hidden { display: none; }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+        .tab-link { padding: 10px 20px; background: #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .tab-link.active { background: var(--accent); color: white; }
     </style>
 </head>
 <body>
@@ -42,103 +47,180 @@
     <!-- LOGIN -->
     <div id="login-screen" class="container" style="max-width: 400px;">
         <h2>SQUADRADRY LOGIN</h2>
-        <input type="text" id="user" placeholder="Usuário" style="width:100%; padding:12px; margin-bottom:10px; border-radius:6px; border:1px solid #ddd;">
-        <input type="password" id="pass" placeholder="Senha" style="width:100%; padding:12px; margin-bottom:10px; border-radius:6px; border:1px solid #ddd;">
-        <button class="btn-save" onclick="login()">Acessar</button>
+        <div class="input-group">
+            <label>Usuário</label>
+            <input type="text" id="user" placeholder="Usuário">
+        </div>
+        <div class="input-group">
+            <label>Senha</label>
+            <input type="password" id="pass" placeholder="Senha">
+        </div>
+        <button class="btn-save" style="width: 100%;" onclick="login()">Acessar</button>
     </div>
 
-    <!-- SISTEMA PRINCIPAL -->
-    <div id="main-app" class="container hidden">
-        <button class="btn-logout" onclick="logout()">Sair</button>
-        <div class="nav-tabs">
-            <div id="tab1" class="tab-btn active" onclick="switchTab('corretiva')">Manutenção Corretiva</div>
-            <div id="tab2" class="tab-btn" onclick="switchTab('preventiva')">Manutenção Preventiva</div>
-        </div>
-
-        <!-- ABA CORRETIVA (SISTEMA ANTERIOR) -->
-        <div id="aba-corretiva">
-            <h3>Registro Corretivo</h3>
-            <label>Retífica e Grupo:</label>
-            <div class="grid-select">
-                <div class="btn-opt opt-ret" onclick="selectSingle(this, 'ret')">Retífica 1</div>
-                <div class="btn-opt opt-ret" onclick="selectSingle(this, 'ret')">Retífica 2</div>
-                <div class="btn-opt opt-grp" onclick="selectSingle(this, 'grp')">Grupo 1</div>
-                <div class="btn-opt opt-grp" onclick="selectSingle(this, 'grp')">Grupo 2</div>
-            </div>
-            <div class="bloco-preventiva">
-                <label>Número do Motor / Identificação:</label>
-                <input type="text" id="numMotorCorretiva" style="width:100%; padding:10px; border-radius:4px; border:1px solid #ddd;">
-            </div>
-            <button class="btn-save" onclick="salvar('Corretiva')">Salvar Corretiva</button>
-        </div>
-
-        <!-- ABA PREVENTIVA (NOVA) -->
-        <div id="aba-preventiva" class="hidden">
-            <h3>Checklist Preventivo</h3>
-            
-            <label>Localização:</label>
-            <div class="grid-select">
-                <div class="btn-opt prev-ret" onclick="selectSingle(this, 'prev-ret')">Retífica 1</div>
-                <div class="btn-opt prev-ret" onclick="selectSingle(this, 'prev-ret')">Retífica 2</div>
-                <div class="btn-opt prev-grp" onclick="selectSingle(this, 'prev-grp')">Grupo 1</div>
-                <div class="btn-opt prev-grp" onclick="selectSingle(this, 'prev-grp')">Grupo 2</div>
+    <!-- SISTEMA -->
+    <div id="main-app" class="hidden">
+        <div class="container">
+            <button class="btn-logout" onclick="logout()">Sair</button>
+            <div class="nav-tabs">
+                <div id="t1" class="tab-link active" onclick="showTab('corretiva')">Manutenção Corretiva</div>
+                <div id="t2" class="tab-link" onclick="showTab('preventiva')">Manutenção Preventiva</div>
+                <div id="t3" class="tab-link" onclick="showTab('admin')">Painel Admin</div>
             </div>
 
-            <!-- Bloco 1: Correias -->
-            <div class="bloco-preventiva">
-                <div class="bloco-titulo">Sistema de Correias</div>
+            <!-- 1. MANUTENÇÃO CORRETIVA (ORIGINAL) -->
+            <div id="aba-corretiva">
+                <h3>Registro de Manutenção Corretiva</h3>
+                <label>Retífica:</label>
                 <div class="grid-select">
-                    <div class="btn-opt btn-check" onclick="this.classList.toggle('active')">Correia Superior</div>
-                    <div class="btn-opt btn-check" onclick="this.classList.toggle('active')">Correia Inferior</div>
+                    <div class="btn-opt opt-ret" onclick="selectSingle(this, 'ret')">Retífica 1</div>
+                    <div class="btn-opt opt-ret" onclick="selectSingle(this, 'ret')">Retífica 2</div>
+                </div>
+                <label>Grupo:</label>
+                <div class="grid-select">
+                    <div class="btn-opt opt-grp" onclick="selectSingle(this, 'grp')">Grupo 1</div>
+                    <div class="btn-opt opt-grp" onclick="selectSingle(this, 'grp')">Grupo 2</div>
+                </div>
+                <div class="bloco">
+                    <label>Peças Trocadas:</label>
+                    <div class="grid-select">
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Disco</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Mancal</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Motor</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Acoplamento Motor</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Acoplamento Mancal</div>
+                    </div>
+                    <label>Número do Motor</label>
+                    <input type="text" id="numMotor" placeholder="ID do Motor">
+                </div>
+                <label>Responsável</label>
+                <input type="text" id="responsavel" style="margin-bottom:20px">
+                <button class="btn-save" onclick="salvar('Corretiva')">Salvar Registro</button>
+            </div>
+
+            <!-- 2. MANUTENÇÃO PREVENTIVA (NOVA ADIÇÃO) -->
+            <div id="aba-preventiva" class="hidden">
+                <h3>Manutenção Preventiva</h3>
+                <label>Retífica:</label>
+                <div class="grid-select">
+                    <div class="btn-opt prev-ret" onclick="selectSingle(this, 'prev-ret')">Retífica 1</div>
+                    <div class="btn-opt prev-ret" onclick="selectSingle(this, 'prev-ret')">Retífica 2</div>
+                </div>
+                <label>Grupo:</label>
+                <div class="grid-select">
+                    <div class="btn-opt prev-grp" onclick="selectSingle(this, 'prev-grp')">Grupo 1</div>
+                    <div class="btn-opt prev-grp" onclick="selectSingle(this, 'prev-grp')">Grupo 2</div>
+                </div>
+
+                <div class="bloco">
+                    <div class="grid-select">
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Superior</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Inferior</div>
+                    </div>
+                </div>
+
+                <div class="bloco">
+                    <div class="grid-select">
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Centralizador Direito</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Centralizador Esquerdo</div>
+                    </div>
+                </div>
+
+                <div class="bloco">
+                    <div class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Empurradores</div>
+                </div>
+
+                <button class="btn-save" onclick="salvar('Preventiva')">Salvar Preventiva</button>
+                <button class="btn-report" onclick="alert('Relatório de Preventivas Gerado!')">Gerar Relatório</button>
+            </div>
+
+            <!-- 3. PAINEL ADMIN (ORIGINAL) -->
+            <div id="aba-admin" class="hidden">
+                <h3>Painel Administrativo</h3>
+                <div class="filter-bar">
+                    <input type="text" id="fMotor" placeholder="Busca Motor" onkeyup="filtrar()">
+                    <input type="date" id="fData" onchange="filtrar()">
+                    <button onclick="limparFiltro()">Limpar</button>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr><th>Data/Hora</th><th>Tipo</th><th>Máquina</th><th>Peças</th><th>ID Motor</th><th>Resp.</th></tr>
+                        </thead>
+                        <tbody id="corpo-tabela"></tbody>
+                    </table>
                 </div>
             </div>
-
-            <!-- Bloco 2: Centralizadores -->
-            <div class="bloco-preventiva">
-                <div class="bloco-titulo">Alinhamento</div>
-                <div class="grid-select">
-                    <div class="btn-opt btn-check" onclick="this.classList.toggle('active')">Centralizador Direito</div>
-                    <div class="btn-opt btn-check" onclick="this.classList.toggle('active')">Centralizador Esquerdo</div>
-                </div>
-            </div>
-
-            <!-- Bloco 3: Empurradores -->
-            <div class="bloco-preventiva">
-                <div class="bloco-titulo">Mecânica de Avanço</div>
-                <button class="btn-opt btn-check" style="width:100%" onclick="this.classList.toggle('active')">Empurradores</button>
-            </div>
-
-            <button class="btn-save" onclick="salvar('Preventiva')">Salvar Preventiva</button>
-            <button class="btn-report" onclick="alert('Gerando Relatório de Preventivas...')">Gerar Relatório</button>
         </div>
     </div>
 
     <script>
+        let logs = [];
+        let r_sel = "", g_sel = "";
+
         function login() {
             const u = document.getElementById('user').value;
             const s = document.getElementById('pass').value;
-            if((u === "sergio" && s === "sergio") || (u === "operador" && s === "123")) {
+            if(u === "sergio" && s === "sergio") {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-            } else { alert("Acesso negado!"); }
+            } else { alert("Login Inválido!"); }
         }
 
-        function switchTab(tipo) {
-            document.getElementById('aba-corretiva').classList.toggle('hidden', tipo !== 'corretiva');
-            document.getElementById('aba-preventiva').classList.toggle('hidden', tipo !== 'preventiva');
-            document.getElementById('tab1').classList.toggle('active', tipo === 'corretiva');
-            document.getElementById('tab2').classList.toggle('active', tipo === 'preventiva');
+        function showTab(aba) {
+            document.getElementById('aba-corretiva').classList.toggle('hidden', aba !== 'corretiva');
+            document.getElementById('aba-preventiva').classList.toggle('hidden', aba !== 'preventiva');
+            document.getElementById('aba-admin').classList.toggle('hidden', aba !== 'admin');
+            document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+            if(aba === 'corretiva') document.getElementById('t1').classList.add('active');
+            if(aba === 'preventiva') document.getElementById('t2').classList.add('active');
+            if(aba === 'admin') { document.getElementById('t3').classList.add('active'); filtrar(); }
         }
 
         function selectSingle(btn, classe) {
             document.querySelectorAll('.' + classe).forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            if(classe.includes('ret')) r_sel = btn.innerText;
+            if(classe.includes('grp')) g_sel = btn.innerText;
         }
 
         function salvar(tipo) {
-            alert("Manutenção " + tipo + " registrada com sucesso!");
-            // Reseta as seleções
-            document.querySelectorAll('.btn-check').forEach(b => b.classList.remove('active'));
+            const pecas = [];
+            const container = tipo === 'Corretiva' ? 'aba-corretiva' : 'aba-preventiva';
+            document.querySelectorAll(`#${container} .btn-peca.active`).forEach(b => pecas.push(b.innerText));
+            
+            const log = {
+                data: new Date().toLocaleDateString('pt-BR'),
+                hora: new Date().toLocaleTimeString(),
+                tipo: tipo,
+                maquina: r_sel + " - " + g_sel,
+                pecas: pecas.join(", "),
+                motor: tipo === 'Corretiva' ? document.getElementById('numMotor').value : "N/A",
+                resp: tipo === 'Corretiva' ? document.getElementById('responsavel').value : "Sistema"
+            };
+            logs.push(log);
+            alert(tipo + " Salva!");
+            document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active'));
+        }
+
+        function filtrar() {
+            const m = document.getElementById('fMotor').value.toLowerCase();
+            const d = document.getElementById('fData').value;
+            const corpo = document.getElementById('corpo-tabela');
+            corpo.innerHTML = "";
+
+            logs.filter(l => {
+                const dataFormatada = l.data.split('/').reverse().join('-');
+                return l.motor.toLowerCase().includes(m) && (d ? dataFormatada === d : true);
+            }).forEach(l => {
+                corpo.innerHTML += `<tr><td>${l.data} ${l.hora}</td><td>${l.tipo}</td><td>${l.maquina}</td><td>${l.pecas}</td><td>${l.motor}</td><td>${l.resp}</td></tr>`;
+            });
+        }
+
+        function limparFiltro() {
+            document.getElementById('fMotor').value = "";
+            document.getElementById('fData').value = "";
+            filtrar();
         }
 
         function logout() { location.reload(); }
