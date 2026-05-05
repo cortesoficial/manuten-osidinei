@@ -3,194 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQUADRADRY - Gestão Industrial</title>
+    <title>SQUADRADRY - Gestão de Acessos e Manutenção</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --success-color: #27ae60;
-            --admin-color: #8e44ad;
-            --bg-color: #f4f7f6;
+            --primary: #2c3e50; --accent: #3498db; --success: #27ae60;
+            --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; margin: auto; }
-        .admin-container { max-width: 900px; background: white; padding: 20px; border-radius: 8px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
+        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 900px; margin: 20px auto; }
         
-        h2 { text-align: center; color: var(--primary-color); }
+        h2, h3 { text-align: center; color: var(--primary); }
         .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 
-        .btn-stack { display: flex; gap: 10px; margin-bottom: 20px; }
-        .btn-stack button { flex: 1; padding: 10px; cursor: pointer; border: 1px solid var(--accent-color); background: white; border-radius: 4px; }
-        .btn-stack button.active { background: var(--accent-color); color: white; }
+        .btn-stack { display: flex; gap: 8px; margin-bottom: 15px; }
+        .btn-stack button { flex: 1; padding: 10px; cursor: pointer; border: 1px solid var(--accent); background: white; border-radius: 6px; font-weight: 500; }
+        .btn-stack button.active { background: var(--accent); color: white; }
 
-        .bloco-componentes { border: 2px solid #eee; padding: 15px; border-radius: 6px; background: #fafafa; margin-bottom: 20px; }
+        .bloco { border: 2px solid #f0f0f0; padding: 15px; border-radius: 8px; background: #fafafa; margin-bottom: 15px; }
         
-        .footer-buttons { display: flex; justify-content: center; gap: 20px; }
-        button { cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-save { background: var(--success-color); color: white; border: none; padding: 12px 30px; border-radius: 4px; }
-        .btn-admin { background: var(--admin-color); color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; margin-top: 10px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table, th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: var(--primary-color); color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
+        .grid-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        button { cursor: pointer; border-radius: 6px; font-weight: bold; transition: 0.2s; }
+        .btn-save { background: var(--success); color: white; border: none; padding: 12px; }
+        .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; float: right; }
+
+        /* Filtros e Tabela */
+        .filter-bar { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; background: #eee; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: var(--primary); color: white; }
 
         .hidden { display: none; }
-        .nav-link { text-align: center; margin-top: 15px; cursor: pointer; color: var(--accent-color); text-decoration: underline; }
+        .user-card { border-left: 4px solid var(--admin); background: #f9f9f9; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
-    <div id="login-screen" class="container">
-        <h2>Acesso ao Sistema</h2>
+    <!-- LOGIN -->
+    <div id="login-screen" class="container" style="max-width: 400px;">
+        <h2>SQUADRADRY LOGIN</h2>
         <div class="input-group">
             <label>Usuário</label>
-            <input type="text" id="user" placeholder="Nome de usuário">
+            <input type="text" id="user" placeholder="Usuário">
         </div>
         <div class="input-group">
             <label>Senha</label>
             <input type="password" id="pass" placeholder="Senha">
         </div>
-        <button class="btn-save" style="width: 100%;" onclick="login()">Entrar</button>
+        <button class="btn-save" style="width: 100%;" onclick="login()">Acessar</button>
     </div>
 
-    <!-- TELA DE REGISTRO (MANUTENÇÃO) -->
+    <!-- REGISTRO (Função: registrar / admin) -->
     <div id="main-screen" class="container hidden">
-        <h2>Registro de Manutenção Diária</h2>
-        <label>Selecione a Retífica:</label>
+        <button class="btn-logout" onclick="logout()">Sair</button>
+        <h3>Registro de Manutenção</h3>
+        
+        <label>Retífica:</label>
         <div class="btn-stack">
             <button class="opt-ret" onclick="selectOpt(this, 'ret')">Retífica 1</button>
             <button class="opt-ret" onclick="selectOpt(this, 'ret')">Retífica 2</button>
         </div>
 
-        <label>Selecione o Grupo:</label>
+        <label>Grupo:</label>
         <div class="btn-stack">
             <button class="opt-grp" onclick="selectOpt(this, 'grp')">Grupo 1</button>
             <button class="opt-grp" onclick="selectOpt(this, 'grp')">Grupo 2</button>
         </div>
 
-        <div class="bloco-componentes">
-            <label>Componente Substituído/Revisado</label>
+        <div class="bloco">
+            <label>Peça</label>
             <select id="componente">
-                <option value="Disco">Disco</option>
-                <option value="Mancal">Mancal</option>
-                <option value="Motor">Motor</option>
-                <option value="Acoplamento do Motor">Acoplamento do Motor</option>
-                <option value="Acoplamento Mancal">Acoplamento Mancal</option>
+                <option>Disco</option><option>Mancal</option><option>Motor</option>
+                <option>Acoplamento do Motor</option><option>Acoplamento Mancal</option>
             </select>
-            <div class="input-group" style="margin-top:15px">
+            <div class="input-group" style="margin-top:10px">
                 <label>Número do Motor</label>
-                <input type="text" id="numMotor" placeholder="Identificação do Motor">
+                <input type="text" id="numMotor">
             </div>
         </div>
 
-        <div class="input-group">
-            <label>Responsável</label>
-            <input type="text" id="responsavel" placeholder="Nome do responsável">
-        </div>
+        <label>Responsável</label>
+        <input type="text" id="responsavel" style="margin-bottom: 15px;">
 
-        <div class="footer-buttons">
-            <button class="btn-save" onclick="salvar()">Salvar Registro</button>
-        </div>
-        <div class="nav-link" onclick="logout()">Sair</div>
+        <button class="btn-save" style="width: 100%;" onclick="salvar()">Salvar Manutenção</button>
     </div>
 
-    <!-- PAINEL DO ADMIN (SERGIO) -->
-    <div id="admin-panel" class="admin-container hidden">
-        <h2 style="color: var(--admin-color);">Painel Administrativo - Relatórios Detalhados</h2>
+    <!-- ADMIN PANEL -->
+    <div id="admin-panel" class="container hidden">
+        <button class="btn-logout" onclick="logout()">Sair</button>
+        <h3>Painel Administrativo</h3>
+
+        <!-- Gestão de Usuários -->
+        <div class="bloco">
+            <h4>Adicionar Usuário</h4>
+            <div class="grid-buttons">
+                <input type="text" id="new-user" placeholder="Login">
+                <input type="password" id="new-pass" placeholder="Senha">
+            </div>
+            <label style="margin-top:10px">Função:</label>
+            <select id="new-role">
+                <option value="admin">Administrador (Tudo)</option>
+                <option value="registrar">Registrar Manutenção</option>
+                <option value="ver">Apenas Ver Relatórios</option>
+            </select>
+            <button class="btn-save" style="margin-top:10px; width:100%; background: var(--admin);" onclick="addUser()">Cadastrar Usuário</button>
+            <div id="user-list" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- Filtros e Relatórios -->
+        <h4>Relatórios Detalhados</h4>
+        <div class="filter-bar">
+            <input type="text" id="filter-motor" placeholder="Buscar Nº Motor" onkeyup="filtrar()">
+            <input type="date" id="filter-data" onchange="filtrar()">
+            <button onclick="limparFiltro()">Limpar</button>
+        </div>
+
         <div style="overflow-x:auto;">
             <table>
                 <thead>
                     <tr>
-                        <th>Data/Hora</th>
-                        <th>Máquina</th>
-                        <th>Grupo</th>
-                        <th>Peça</th>
-                        <th>ID Motor</th>
-                        <th>Responsável</th>
+                        <th>Data</th><th>Máquina</th><th>Peça</th><th>Motor</th><th>Resp.</th>
                     </tr>
                 </thead>
-                <tbody id="tabela-relatorios">
-                    <!-- Os dados aparecem aqui -->
-                </tbody>
+                <tbody id="tabela-corpo"></tbody>
             </table>
         </div>
-        <button class="btn-admin" onclick="logout()">Sair do Painel</button>
     </div>
 
     <script>
-        let registros = [];
-        let selecaoAtual = { ret: "", grp: "" };
+        // Dados Iniciais
+        let users = [
+            {u: "sergio", p: "sergio", r: "admin"},
+            {u: "operador", p: "123", r: "registrar"}
+        ];
+        let logs = [];
+        let curRet = "", curGrp = "";
 
         function login() {
             const u = document.getElementById('user').value;
             const s = document.getElementById('pass').value;
+            const found = users.find(x => x.u === u && x.p === s);
 
-            if(u === "sergio" && s === "sergio") {
-                document.getElementById('login-screen').classList.add('hidden');
+            if(!found) return alert("Erro de acesso!");
+
+            document.getElementById('login-screen').classList.add('hidden');
+            if(found.r === 'admin') {
                 document.getElementById('admin-panel').classList.remove('hidden');
-                carregarTabela();
-            } else if(u === "operador" && s === "123") {
-                document.getElementById('login-screen').classList.add('hidden');
+                renderUsers();
+                filtrar();
+            } else if(found.r === 'registrar') {
                 document.getElementById('main-screen').classList.remove('hidden');
             } else {
-                alert("Acesso negado!");
+                // Função "Apenas Ver"
+                document.getElementById('admin-panel').classList.remove('hidden');
+                document.querySelector('.bloco').classList.add('hidden'); // Esconde criar user
+                filtrar();
             }
         }
 
         function selectOpt(btn, tipo) {
             document.querySelectorAll('.opt-' + tipo).forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            selecaoAtual[tipo] = btn.innerText;
+            if(tipo === 'ret') curRet = btn.innerText;
+            if(tipo === 'grp') curGrp = btn.innerText;
         }
 
         function salvar() {
-            const novoRegistro = {
-                data: new Date().toLocaleString(),
-                retifica: selecaoAtual.ret || "N/A",
-                grupo: selecaoAtual.grp || "N/A",
+            const dataObj = new Date();
+            const log = {
+                data: dataObj.toISOString().split('T')[0], // YYYY-MM-DD
+                hora: dataObj.toLocaleTimeString(),
+                maquina: `${curRet} - ${curGrp}`,
                 peca: document.getElementById('componente').value,
-                idMotor: document.getElementById('numMotor').value,
+                motor: document.getElementById('numMotor').value,
                 resp: document.getElementById('responsavel').value
             };
-
-            if(!novoRegistro.idMotor || !novoRegistro.resp) {
-                alert("Preencha todos os campos!");
-                return;
-            }
-
-            registros.push(novoRegistro);
-            alert("Manutenção salva com sucesso!");
-            limparCampos();
+            logs.push(log);
+            alert("Salvo!");
+            document.getElementById('numMotor').value = "";
         }
 
-        function carregarTabela() {
-            const corpo = document.getElementById('tabela-relatorios');
-            corpo.innerHTML = "";
-            registros.forEach(r => {
-                corpo.innerHTML += `<tr>
-                    <td>${r.data}</td>
-                    <td>${r.retifica}</td>
-                    <td>${r.grupo}</td>
-                    <td>${r.peca}</td>
-                    <td>${r.idMotor}</td>
-                    <td>${r.resp}</td>
-                </tr>`;
+        function addUser() {
+            const u = document.getElementById('new-user').value;
+            const p = document.getElementById('new-pass').value;
+            const r = document.getElementById('new-role').value;
+            if(u && p) {
+                users.push({u, p, r});
+                renderUsers();
+            }
+        }
+
+        function renderUsers() {
+            const list = document.getElementById('user-list');
+            list.innerHTML = "<strong>Usuários Ativos:</strong>";
+            users.forEach(x => {
+                list.innerHTML += `<div class="user-card"><span>${x.u} (${x.r})</span></div>`;
             });
         }
 
-        function limparCampos() {
-            document.getElementById('numMotor').value = "";
-            document.getElementById('responsavel').value = "";
+        function filtrar() {
+            const fMotor = document.getElementById('filter-motor').value.toLowerCase();
+            const fData = document.getElementById('filter-data').value;
+            const corpo = document.getElementById('tabela-corpo');
+            corpo.innerHTML = "";
+
+            logs.filter(l => {
+                const matchMotor = l.motor.toLowerCase().includes(fMotor);
+                const matchData = fData ? l.data === fData : true;
+                return matchMotor && matchData;
+            }).forEach(l => {
+                corpo.innerHTML += `<tr><td>${l.data} ${l.hora}</td><td>${l.maquina}</td><td>${l.peca}</td><td>${l.motor}</td><td>${l.resp}</td></tr>`;
+            });
         }
 
-        function logout() {
-            location.reload();
+        function limparFiltro() {
+            document.getElementById('filter-motor').value = "";
+            document.getElementById('filter-data').value = "";
+            filtrar();
         }
+
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
