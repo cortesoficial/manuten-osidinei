@@ -3,81 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> SPM- Gestão de Manutenção</title>
+    <title>SQUADRADRY - Gestão Industrial</title>
     <style>
         :root {
             --primary: #2c3e50; --accent: #3498db; --success: #27ae60;
-            --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c;
+            --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c; --warning: #f39c12;
         }
 
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
-        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 900px; margin: 20px auto; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 900px; margin: 10px auto; }
         
-        h2, h3, h4 { text-align: center; color: var(--primary); }
+        h2, h3, h4 { text-align: center; color: var(--primary); margin-top: 10px; }
         .input-group { margin-bottom: 15px; width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 
-        .grid-select { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .btn-opt { padding: 12px; cursor: pointer; border: 2px solid #ddd; background: white; border-radius: 6px; font-weight: 500; transition: 0.2s; text-align: center; }
+        .grid-select { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .btn-opt { padding: 10px; cursor: pointer; border: 2px solid #ddd; background: white; border-radius: 6px; font-weight: 500; transition: 0.2s; text-align: center; font-size: 13px; }
         .btn-opt.active { background: var(--accent); color: white; border-color: var(--accent); }
         .btn-peca.active { background: var(--success); border-color: var(--success); color: white; }
 
-        .bloco { border: 2px solid #f0f0f0; padding: 20px; border-radius: 8px; background: #fafafa; margin-bottom: 15px; }
+        .bloco { border: 2px solid #f0f0f0; padding: 15px; border-radius: 8px; background: #fafafa; margin-bottom: 10px; }
+        .label-bloco { font-weight: bold; display: block; margin-bottom: 10px; color: #555; font-size: 14px; }
         
-        .btn-save { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-save { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; float: right; border-radius: 4px; cursor: pointer; }
-        .btn-report { background: #34495e; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: var(--primary); color: white; }
 
         .hidden { display: none; }
-        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-        .tab-link { padding: 10px 15px; background: #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .nav-tabs { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
+        .tab-link { padding: 8px 12px; background: #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
         .tab-link.active { background: var(--accent); color: white; }
         
-        .user-editor-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border: 1px solid #eee; margin-top: 5px; border-radius: 5px; }
-        .btn-del { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .user-editor-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px; border: 1px solid #eee; margin-top: 5px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN -->
     <div id="login-screen" class="container" style="max-width: 400px;">
         <h2>SQUADRADRY LOGIN</h2>
         <input type="text" id="user" placeholder="Usuário" class="input-group">
         <input type="password" id="pass" placeholder="Senha" class="input-group">
-        <button class="btn-save" onclick="login()">Acessar Sistema</button>
+        <button class="btn-save" onclick="login()">Acessar</button>
     </div>
 
-    <!-- SISTEMA -->
     <div id="main-app" class="hidden">
         <div class="container">
             <button class="btn-logout" onclick="logout()">Sair</button>
             <div class="nav-tabs">
-                <div id="t1" class="tab-link active" onclick="showTab('corretiva')">Corretiva</div>
-                <div id="t2" class="tab-link" onclick="showTab('preventiva')">Preventiva</div>
-                <div id="t3" class="tab-link" onclick="showTab('admin')">Painel Admin</div>
+                <div class="tab-link active" onclick="showTab('corretiva')">Corretiva</div>
+                <div class="tab-link" onclick="showTab('correias')">Correias</div>
+                <div class="tab-link" onclick="showTab('empurrador')">Empurrador</div>
+                <div class="tab-link" onclick="showTab('centralizador')">Centralizador</div>
+                <div class="tab-link" onclick="showTab('admin')">Painel Admin</div>
+            </div>
+
+            <!-- SELEÇÃO DE MÁQUINA (GLOBAL PARA AS ABAS) -->
+            <div id="maquina-selector" class="bloco">
+                <label class="label-bloco">Localização da Manutenção:</label>
+                <div class="grid-select">
+                    <div class="btn-opt m-ret" onclick="sel(this, 'm-ret')">Retífica 1</div>
+                    <div class="btn-opt m-ret" onclick="sel(this, 'm-ret')">Retífica 2</div>
+                    <div class="btn-opt m-grp" onclick="sel(this, 'm-grp')">Grupo 1</div>
+                    <div class="btn-opt m-grp" onclick="sel(this, 'm-grp')">Grupo 2</div>
+                </div>
             </div>
 
             <!-- 1. CORRETIVA -->
-            <div id="aba-corretiva">
+            <div id="aba-corretiva" class="tab-content">
                 <h3>Manutenção Corretiva</h3>
-                <label>Retífica e Grupo:</label>
-                <div class="grid-select">
-                    <div class="btn-opt c-ret" onclick="sel(this, 'c-ret')">Retífica 1</div>
-                    <div class="btn-opt c-ret" onclick="sel(this, 'c-ret')">Retífica 2</div>
-                    <div class="btn-opt c-grp" onclick="sel(this, 'c-grp')">Grupo 1</div>
-                    <div class="btn-opt c-grp" onclick="sel(this, 'c-grp')">Grupo 2</div>
-                </div>
                 <div class="bloco">
-                    <label>Peças:</label>
                     <div class="grid-select">
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Disco</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Mancal</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Motor</div>
-                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Acoplamento Motor</div>
-                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Acoplamento Mancal</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Acoplamento</div>
                     </div>
                     <input type="text" id="numMotor" placeholder="Número do Motor" class="input-group">
                 </div>
@@ -85,79 +86,80 @@
                 <button class="btn-save" onclick="salvar('Corretiva')">Salvar Corretiva</button>
             </div>
 
-            <!-- 2. PREVENTIVA -->
-            <div id="aba-preventiva" class="hidden">
-                <h3>Manutenção Preventiva</h3>
-                <label>Retífica e Grupo:</label>
-                <div class="grid-select">
-                    <div class="btn-opt p-ret" onclick="sel(this, 'p-ret')">Retífica 1</div>
-                    <div class="btn-opt p-ret" onclick="sel(this, 'p-ret')">Retífica 2</div>
-                    <div class="btn-opt p-grp" onclick="sel(this, 'p-grp')">Grupo 1</div>
-                    <div class="btn-opt p-grp" onclick="sel(this, 'p-grp')">Grupo 2</div>
-                </div>
+            <!-- 2. CORREIAS (Antiga Preventiva) -->
+            <div id="aba-correias" class="tab-content hidden">
+                <h3>Manutenção de Correias</h3>
                 <div class="bloco">
                     <div class="grid-select">
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Superior</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Inferior</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Trocada)</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Apertada)</div>
                     </div>
                 </div>
-                <div class="bloco">
-                    <div class="grid-select">
-                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Centralizador Direito</div>
-                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Centralizador Esquerdo</div>
-                    </div>
-                </div>
-                <div class="bloco">
-                    <div class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Empurradores</div>
-                </div>
-                <button class="btn-save" onclick="salvar('Preventiva')">Salvar Preventiva</button>
+                <button class="btn-save" onclick="salvar('Correias')">Salvar Registro</button>
             </div>
 
-            <!-- 3. ADMIN -->
-            <div id="aba-admin" class="hidden">
-                <h3>Painel Administrativo</h3>
-                
-                <!-- Editor de Usuários -->
+            <!-- 3. EMPURRADOR (Nova Aba) -->
+            <div id="aba-empurrador" class="tab-content hidden">
+                <h3>Manutenção do Empurrador</h3>
                 <div class="bloco">
-                    <h4>Gerenciar Usuários</h4>
-                    <div class="grid-select">
-                        <input type="text" id="n-user" placeholder="Novo Login" class="input-group" style="margin-bottom:0">
-                        <input type="password" id="n-pass" placeholder="Senha" class="input-group" style="margin-bottom:0">
-                    </div>
-                    <select id="n-role" class="input-group">
-                        <option value="admin">Administrador</option>
-                        <option value="registrar">Operador</option>
-                    </select>
+                    <span class="label-bloco">Empurrador</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <div class="bloco">
+                    <span class="label-bloco">Pastilha do Empurrador</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <div class="bloco">
+                    <span class="label-bloco">Bloco Empurrador</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <div class="bloco">
+                    <span class="label-bloco">Rolamento Linear</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <button class="btn-save" onclick="salvar('Empurrador')">Salvar Empurrador</button>
+            </div>
+
+            <!-- 4. CENTRALIZADOR (Nova Aba) -->
+            <div id="aba-centralizador" class="tab-content hidden">
+                <h3>Manutenção Centralizador</h3>
+                <div class="bloco">
+                    <span class="label-bloco">Centralizador</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <div class="bloco">
+                    <span class="label-bloco">Haste do Centralizador</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <button class="btn-save" onclick="salvar('Centralizador')">Salvar Centralizador</button>
+            </div>
+
+            <!-- 5. ADMIN -->
+            <div id="aba-admin" class="tab-content hidden">
+                <h3>Painel Admin</h3>
+                <div class="bloco">
+                    <h4>Gestão de Usuários</h4>
+                    <input type="text" id="n-user" placeholder="Login" class="input-group">
+                    <input type="password" id="n-pass" placeholder="Senha" class="input-group">
                     <button class="btn-save" style="background:var(--admin)" onclick="addUser()">Criar Usuário</button>
-                    <div id="u-list" style="margin-top:15px"></div>
+                    <div id="u-list" style="margin-top:10px"></div>
                 </div>
-
-                <!-- Filtros e Relatórios por Data/Aba -->
                 <div class="bloco">
-                    <h4>Exportar Relatórios</h4>
-                    <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:10px;">
-                        <input type="date" id="fD" class="input-group" style="margin-bottom:0">
-                        <select id="report-type" class="input-group" style="margin-bottom:0">
-                            <option value="completo">Relatório Completo</option>
-                            <option value="Corretiva">Apenas Corretivas</option>
-                            <option value="Preventiva">Apenas Preventivas</option>
-                        </select>
-                    </div>
-                    <button class="btn-report" style="width:100%" onclick="baixarRelatorio()">Baixar Relatório Filtrado</button>
+                    <h4>Relatórios</h4>
+                    <input type="date" id="fD" class="input-group" onchange="filtrar()">
+                    <button class="btn-save" style="background:#34495e" onclick="baixarRelatorio()">Baixar Relatório Completo</button>
                 </div>
-
-                <div style="overflow-x:auto;">
-                    <table id="tab-rel">
-                        <thead><tr><th>Data</th><th>Tipo</th><th>Máquina</th><th>Peças</th><th>Motor</th><th>Resp.</th></tr></thead>
-                        <tbody id="corpo"></tbody>
-                    </table>
-                </div>
+                <table id="tab-rel">
+                    <thead><tr><th>Data</th><th>Aba</th><th>Máquina</th><th>Ações</th><th>Resp.</th></tr></thead>
+                    <tbody id="corpo"></tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // Carregar usuários do LocalStorage ou usar o padrão
         let users = JSON.parse(localStorage.getItem('users')) || [{u:'sergio', p:'sergio', r:'admin'}];
         let logs = [];
         let r_sel = "", g_sel = "";
@@ -165,21 +167,19 @@
         function login() {
             const u = document.getElementById('user').value;
             const s = document.getElementById('pass').value;
-            // Busca na lista dinâmica de usuários
-            const found = users.find(x => x.u === u && x.p === s);
-            
-            if(found) {
+            if(users.find(x => x.u === u && x.p === s)) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 renderUsers();
-            } else { 
-                alert("Usuário ou senha incorretos!"); 
-            }
+            } else { alert("Erro de Login"); }
         }
 
         function showTab(aba) {
-            ['corretiva','preventiva','admin'].forEach(a => document.getElementById('aba-'+a).classList.toggle('hidden', a !== aba));
-            document.querySelectorAll('.tab-link').forEach(t => t.classList.toggle('active', t.innerText.toLowerCase().includes(aba)));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById('aba-'+aba).classList.remove('hidden');
+            document.querySelectorAll('.tab-link').forEach(t => {
+                t.classList.toggle('active', t.innerText.toLowerCase() === aba);
+            });
             if(aba === 'admin') filtrar();
         }
 
@@ -189,57 +189,60 @@
             if(cl.includes('ret')) r_sel = btn.innerText; else g_sel = btn.innerText;
         }
 
-        function salvar(tipo) {
-            const container = tipo === 'Corretiva' ? 'aba-corretiva' : 'aba-preventiva';
+        function salvar(abaNome) {
+            const container = document.getElementById('aba-' + abaNome.toLowerCase());
             const pecas = [];
-            document.querySelectorAll(`#${container} .btn-peca.active`).forEach(b => pecas.push(b.innerText));
             
-            if(!r_sel || !g_sel || pecas.length === 0) return alert("Selecione Retífica, Grupo e Peças!");
+            // Lógica especial para pegar o nome do componente + a ação "Substituído"
+            container.querySelectorAll('.bloco').forEach(bl => {
+                const label = bl.querySelector('.label-bloco')?.innerText;
+                const btnStatus = bl.querySelector('.btn-peca.active');
+                if(label && btnStatus) {
+                    pecas.push(`${label} (${btnStatus.innerText})`);
+                } else if (!label && btnStatus) {
+                    pecas.push(btnStatus.innerText);
+                }
+            });
+
+            if(!r_sel || !g_sel || pecas.length === 0) return alert("Preencha Máquina e Componentes!");
 
             const log = {
                 data: new Date().toLocaleDateString('pt-BR'),
                 isoData: new Date().toISOString().split('T')[0],
-                hora: new Date().toLocaleTimeString(),
-                tipo: tipo,
+                aba: abaNome,
                 maq: r_sel + " " + g_sel,
                 pecas: pecas.join(", "),
-                mot: tipo === 'Corretiva' ? document.getElementById('numMotor').value : "N/A",
-                res: tipo === 'Corretiva' ? document.getElementById('resp').value : "Operador"
+                res: document.getElementById('resp')?.value || "Operador"
             };
+
             logs.push(log);
-            alert(tipo + " salva!");
+            alert("Salvo com sucesso!");
             document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active'));
         }
 
         function addUser() {
             const u = document.getElementById('n-user').value;
             const p = document.getElementById('n-pass').value;
-            const r = document.getElementById('n-role').value;
-            if(u && p) { 
-                users.push({u, p, r}); 
+            if(u && p) {
+                users.push({u, p, r:'operador'});
                 localStorage.setItem('users', JSON.stringify(users));
-                renderUsers(); 
-                alert("Usuário criado!");
+                renderUsers();
             }
-        }
-
-        function deleteUser(index) {
-            if(users[index].u === 'sergio') return alert("Não é possível excluir o admin principal.");
-            users.splice(index, 1);
-            localStorage.setItem('users', JSON.stringify(users));
-            renderUsers();
         }
 
         function renderUsers() {
             const list = document.getElementById('u-list');
-            list.innerHTML = "<b>Lista de Usuários:</b>";
-            users.forEach((x, index) => {
-                list.innerHTML += `
-                <div class="user-editor-row">
-                    <span>${x.u} (${x.r})</span>
-                    <button class="btn-del" onclick="deleteUser(${index})">Excluir</button>
-                </div>`;
+            list.innerHTML = "";
+            users.forEach((x, i) => {
+                list.innerHTML += `<div class="user-editor-row"><span>${x.u}</span><button onclick="deleteUser(${i})" class="btn-del" style="background:red; color:white; border:none; border-radius:3px; padding:4px 8px; cursor:pointer">X</button></div>`;
             });
+        }
+
+        function deleteUser(i) {
+            if(users[i].u === 'sergio') return;
+            users.splice(i, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUsers();
         }
 
         function filtrar() {
@@ -247,34 +250,18 @@
             const c = document.getElementById('corpo');
             c.innerHTML = "";
             logs.filter(l => d ? l.isoData === d : true).forEach(l => {
-                c.innerHTML += `<tr><td>${l.data}</td><td>${l.tipo}</td><td>${l.maq}</td><td>${l.pecas}</td><td>${l.mot}</td><td>${l.res}</td></tr>`;
+                c.innerHTML += `<tr><td>${l.data}</td><td>${l.aba}</td><td>${l.maq}</td><td>${l.pecas}</td><td>${l.res}</td></tr>`;
             });
         }
 
         function baixarRelatorio() {
-            const tipoFiltro = document.getElementById('report-type').value;
-            const dataFiltro = document.getElementById('fD').value;
-            
-            let conteudo = `RELATÓRIO SQUADRADRY - ${tipoFiltro.toUpperCase()}\n`;
-            conteudo += `Data do Filtro: ${dataFiltro || 'Todos os períodos'}\n\n`;
-
-            const filtrados = logs.filter(l => {
-                const matchTipo = (tipoFiltro === 'completo' || l.tipo === tipoFiltro);
-                const matchData = (dataFiltro === '' || l.isoData === dataFiltro);
-                return matchTipo && matchData;
-            });
-
-            filtrados.forEach(l => {
-                conteudo += `[${l.data} ${l.hora}] TIPO: ${l.tipo} | MAQ: ${l.maq} | PEÇAS: ${l.pecas} | MOTOR: ${l.mot} | RESP: ${l.res}\n`;
-            });
-
-            if(filtrados.length === 0) conteudo += "Nenhum registro encontrado para estes filtros.";
-
-            const blob = new Blob([conteudo], {type: 'text/plain'});
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `relatorio_${tipoFiltro}.txt`;
-            link.click();
+            let txt = "RELATÓRIO SQUADRADRY\n\n";
+            logs.forEach(l => txt += `[${l.data}] ${l.aba} | ${l.maq} | ${l.pecas} | Resp: ${l.res}\n`);
+            const blob = new Blob([txt], {type: 'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "relatorio_squadradry.txt";
+            a.click();
         }
 
         function logout() { location.reload(); }
