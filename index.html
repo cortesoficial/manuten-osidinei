@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQUADRADRY - Gestão Industrial</title>
+    <title>SQUADRADRY - Sistema Industrial</title>
     <style>
         :root {
             --primary: #2c3e50; --accent: #3498db; --success: #27ae60;
@@ -17,7 +17,7 @@
         .input-group { margin-bottom: 15px; width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 
         .grid-select { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .btn-opt { padding: 10px; cursor: pointer; border: 2px solid #ddd; background: white; border-radius: 6px; font-weight: 500; transition: 0.2s; text-align: center; font-size: 13px; }
+        .btn-opt { padding: 12px; cursor: pointer; border: 2px solid #ddd; background: white; border-radius: 6px; font-weight: 500; transition: 0.2s; text-align: center; font-size: 13px; }
         .btn-opt.active { background: var(--accent); color: white; border-color: var(--accent); }
         .btn-peca.active { background: var(--success); border-color: var(--success); color: white; }
 
@@ -41,6 +41,7 @@
 </head>
 <body>
 
+    <!-- TELA DE LOGIN -->
     <div id="login-screen" class="container" style="max-width: 400px;">
         <h2>SQUADRADRY LOGIN</h2>
         <input type="text" id="user" placeholder="Usuário" class="input-group">
@@ -48,6 +49,7 @@
         <button class="btn-save" onclick="login()">Acessar</button>
     </div>
 
+    <!-- SISTEMA PRINCIPAL -->
     <div id="main-app" class="hidden">
         <div class="container">
             <button class="btn-logout" onclick="logout()">Sair</button>
@@ -59,7 +61,7 @@
                 <div class="tab-link" onclick="showTab('admin')">Painel Admin</div>
             </div>
 
-            <!-- SELEÇÃO DE MÁQUINA (GLOBAL PARA AS ABAS) -->
+            <!-- SELEÇÃO DE MÁQUINA -->
             <div id="maquina-selector" class="bloco">
                 <label class="label-bloco">Localização da Manutenção:</label>
                 <div class="grid-select">
@@ -74,6 +76,7 @@
             <div id="aba-corretiva" class="tab-content">
                 <h3>Manutenção Corretiva</h3>
                 <div class="bloco">
+                    <label class="label-bloco">Peças Trocadas:</label>
                     <div class="grid-select">
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Disco</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Mancal</div>
@@ -82,11 +85,10 @@
                     </div>
                     <input type="text" id="numMotor" placeholder="Número do Motor" class="input-group">
                 </div>
-                <input type="text" id="resp" placeholder="Responsável" class="input-group">
-                <button class="btn-save" onclick="salvar('Corretiva')">Salvar Corretiva</button>
+                <button class="btn-save" onclick="salvar('Corretiva')">Salvar Registro</button>
             </div>
 
-            <!-- 2. CORREIAS (Antiga Preventiva) -->
+            <!-- 2. CORREIAS -->
             <div id="aba-correias" class="tab-content hidden">
                 <h3>Manutenção de Correias</h3>
                 <div class="bloco">
@@ -100,45 +102,27 @@
                 <button class="btn-save" onclick="salvar('Correias')">Salvar Registro</button>
             </div>
 
-            <!-- 3. EMPURRADOR (Nova Aba) -->
+            <!-- 3. EMPURRADOR -->
             <div id="aba-empurrador" class="tab-content hidden">
                 <h3>Manutenção do Empurrador</h3>
-                <div class="bloco">
-                    <span class="label-bloco">Empurrador</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
-                <div class="bloco">
-                    <span class="label-bloco">Pastilha do Empurrador</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
-                <div class="bloco">
-                    <span class="label-bloco">Bloco Empurrador</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
-                <div class="bloco">
-                    <span class="label-bloco">Rolamento Linear</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
-                <button class="btn-save" onclick="salvar('Empurrador')">Salvar Empurrador</button>
+                <div class="bloco"><span class="label-bloco">Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Pastilha do Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Bloco Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Rolamento Linear</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <button class="btn-save" onclick="salvar('Empurrador')">Salvar Registro</button>
             </div>
 
-            <!-- 4. CENTRALIZADOR (Nova Aba) -->
+            <!-- 4. CENTRALIZADOR -->
             <div id="aba-centralizador" class="tab-content hidden">
                 <h3>Manutenção Centralizador</h3>
-                <div class="bloco">
-                    <span class="label-bloco">Centralizador</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
-                <div class="bloco">
-                    <span class="label-bloco">Haste do Centralizador</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
-                <button class="btn-save" onclick="salvar('Centralizador')">Salvar Centralizador</button>
+                <div class="bloco"><span class="label-bloco">Centralizador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Haste do Centralizador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <button class="btn-save" onclick="salvar('Centralizador')">Salvar Registro</button>
             </div>
 
             <!-- 5. ADMIN -->
             <div id="aba-admin" class="tab-content hidden">
-                <h3>Painel Admin</h3>
+                <h3>Painel Administrativo</h3>
                 <div class="bloco">
                     <h4>Gestão de Usuários</h4>
                     <input type="text" id="n-user" placeholder="Login" class="input-group">
@@ -147,9 +131,9 @@
                     <div id="u-list" style="margin-top:10px"></div>
                 </div>
                 <div class="bloco">
-                    <h4>Relatórios</h4>
+                    <h4>Relatórios e Histórico</h4>
                     <input type="date" id="fD" class="input-group" onchange="filtrar()">
-                    <button class="btn-save" style="background:#34495e" onclick="baixarRelatorio()">Baixar Relatório Completo</button>
+                    <button class="btn-save" style="background:#34495e" onclick="baixarRelatorio()">Baixar Relatório (.txt)</button>
                 </div>
                 <table id="tab-rel">
                     <thead><tr><th>Data</th><th>Aba</th><th>Máquina</th><th>Ações</th><th>Resp.</th></tr></thead>
@@ -160,25 +144,41 @@
     </div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('users')) || [{u:'sergio', p:'sergio', r:'admin'}];
-        let logs = [];
+        // Memória do Sistema
+        let users = JSON.parse(localStorage.getItem('users')) || [{u:'sergio', p:'sergio'}];
+        let logs = JSON.parse(localStorage.getItem('logs')) || [];
         let r_sel = "", g_sel = "";
+
+        // Manter conectado ao atualizar
+        window.onload = function() {
+            const logado = localStorage.getItem('sessaoAtiva');
+            if(logado) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                renderUsers();
+                filtrar();
+            }
+        };
 
         function login() {
             const u = document.getElementById('user').value;
             const s = document.getElementById('pass').value;
             if(users.find(x => x.u === u && x.p === s)) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                renderUsers();
-            } else { alert("Erro de Login"); }
+                localStorage.setItem('sessaoAtiva', u);
+                location.reload();
+            } else { alert("Usuário ou senha inválidos."); }
+        }
+
+        function logout() {
+            localStorage.removeItem('sessaoAtiva');
+            location.reload();
         }
 
         function showTab(aba) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.getElementById('aba-'+aba).classList.remove('hidden');
             document.querySelectorAll('.tab-link').forEach(t => {
-                t.classList.toggle('active', t.innerText.toLowerCase() === aba);
+                t.classList.toggle('active', t.innerText.toLowerCase().includes(aba));
             });
             if(aba === 'admin') filtrar();
         }
@@ -193,40 +193,41 @@
             const container = document.getElementById('aba-' + abaNome.toLowerCase());
             const pecas = [];
             
-            // Lógica especial para pegar o nome do componente + a ação "Substituído"
             container.querySelectorAll('.bloco').forEach(bl => {
                 const label = bl.querySelector('.label-bloco')?.innerText;
                 const btnStatus = bl.querySelector('.btn-peca.active');
-                if(label && btnStatus) {
-                    pecas.push(`${label} (${btnStatus.innerText})`);
-                } else if (!label && btnStatus) {
-                    pecas.push(btnStatus.innerText);
-                }
+                if(label && btnStatus) pecas.push(`${label}: ${btnStatus.innerText}`);
+                else if(!label && btnStatus) pecas.push(btnStatus.innerText);
             });
 
-            if(!r_sel || !g_sel || pecas.length === 0) return alert("Preencha Máquina e Componentes!");
+            if(!r_sel || !g_sel || pecas.length === 0) return alert("Selecione Máquina e Componentes!");
 
             const log = {
                 data: new Date().toLocaleDateString('pt-BR'),
-                isoData: new Date().toISOString().split('T')[0],
+                iso: new Date().toISOString().split('T')[0],
                 aba: abaNome,
-                maq: r_sel + " " + g_sel,
+                maq: r_sel + " - " + g_sel,
                 pecas: pecas.join(", "),
-                res: document.getElementById('resp')?.value || "Operador"
+                res: localStorage.getItem('sessaoAtiva'),
+                motor: document.getElementById('numMotor')?.value || ""
             };
 
             logs.push(log);
+            localStorage.setItem('logs', JSON.stringify(logs));
             alert("Salvo com sucesso!");
             document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active'));
+            if(document.getElementById('numMotor')) document.getElementById('numMotor').value = "";
         }
 
         function addUser() {
             const u = document.getElementById('n-user').value;
             const p = document.getElementById('n-pass').value;
             if(u && p) {
-                users.push({u, p, r:'operador'});
+                users.push({u, p});
                 localStorage.setItem('users', JSON.stringify(users));
                 renderUsers();
+                document.getElementById('n-user').value = "";
+                document.getElementById('n-pass').value = "";
             }
         }
 
@@ -234,12 +235,11 @@
             const list = document.getElementById('u-list');
             list.innerHTML = "";
             users.forEach((x, i) => {
-                list.innerHTML += `<div class="user-editor-row"><span>${x.u}</span><button onclick="deleteUser(${i})" class="btn-del" style="background:red; color:white; border:none; border-radius:3px; padding:4px 8px; cursor:pointer">X</button></div>`;
+                list.innerHTML += `<div class="user-editor-row"><span>${x.u}</span>${x.u !== 'sergio' ? `<button onclick="deleteUser(${i})" style="background:red; color:white; border:none; padding:4px 8px; cursor:pointer">X</button>` : ''}</div>`;
             });
         }
 
         function deleteUser(i) {
-            if(users[i].u === 'sergio') return;
             users.splice(i, 1);
             localStorage.setItem('users', JSON.stringify(users));
             renderUsers();
@@ -249,22 +249,21 @@
             const d = document.getElementById('fD').value;
             const c = document.getElementById('corpo');
             c.innerHTML = "";
-            logs.filter(l => d ? l.isoData === d : true).forEach(l => {
-                c.innerHTML += `<tr><td>${l.data}</td><td>${l.aba}</td><td>${l.maq}</td><td>${l.pecas}</td><td>${l.res}</td></tr>`;
+            logs.filter(l => d ? l.iso === d : true).reverse().forEach(l => {
+                c.innerHTML += `<tr><td>${l.data}</td><td>${l.aba}</td><td>${l.maq}</td><td>${l.pecas} ${l.motor ? ' (Motor: '+l.motor+')' : ''}</td><td>${l.res}</td></tr>`;
             });
         }
 
         function baixarRelatorio() {
-            let txt = "RELATÓRIO SQUADRADRY\n\n";
-            logs.forEach(l => txt += `[${l.data}] ${l.aba} | ${l.maq} | ${l.pecas} | Resp: ${l.res}\n`);
+            if(logs.length === 0) return alert("Sem dados.");
+            let txt = "RELATÓRIO SQUADRADRY\n" + "=".repeat(30) + "\n";
+            logs.forEach(l => txt += `[${l.data}] ${l.aba} | ${l.maq} | Ações: ${l.pecas} | Resp: ${l.res}\n`);
             const blob = new Blob([txt], {type: 'text/plain'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = "relatorio_squadradry.txt";
             a.click();
         }
-
-        function logout() { location.reload(); }
     </script>
 </body>
 </html>
