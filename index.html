@@ -11,8 +11,50 @@
             --disabled: #bdc3c7;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
-        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 900px; margin: 10px auto; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
+        
+        /* Estilo do Letreiro (Marquee) */
+        #marquee-container {
+            width: 100%;
+            background: var(--danger);
+            color: white;
+            padding: 10px 0;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .marquee-text {
+            white-space: nowrap;
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 15s linear infinite;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        .close-marquee {
+            background: rgba(0,0,0,0.2);
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+            border-radius: 4px;
+            z-index: 1001;
+        }
+
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 900px; margin: 20px auto; }
         
         h2, h3, h4 { text-align: center; color: var(--primary); margin-top: 10px; }
         .input-group { margin-bottom: 15px; width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
@@ -28,14 +70,6 @@
         .btn-save { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; float: right; border-radius: 4px; cursor: pointer; }
 
-        /* Estilo do Alerta com o botão X */
-        #alert-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 40px 30px; border-radius: 15px; text-align: center; max-width: 450px; border-top: 10px solid var(--danger); position: relative; }
-        .close-x { position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; color: #999; cursor: pointer; line-height: 1; }
-        .close-x:hover { color: var(--danger); }
-        .modal-content h1 { color: var(--danger); margin-bottom: 15px; font-size: 32px; }
-        .modal-content p { font-size: 18px; color: #333; line-height: 1.5; font-weight: bold; }
-
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; background: white; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: var(--primary); color: white; }
@@ -44,25 +78,22 @@
         .nav-tabs { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
         .tab-link { padding: 8px 12px; background: #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
         .tab-link.active { background: var(--accent); color: white; }
-        .tab-link.disabled { background: var(--disabled); color: #7f8c8d; cursor: not-allowed; opacity: 0.7; }
-
+        
         .user-editor-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px; border: 1px solid #eee; margin-top: 5px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <!-- ALERTA DE ATENÇÃO -->
-    <div id="alert-modal" class="hidden">
-        <div class="modal-content">
-            <span class="close-x" onclick="fecharAlerta()">&times;</span>
-            <h1>⚠️ ATENÇÃO!</h1>
-            <p>Problemas na diagonal da máquina detectados.</p>
-            <p>Siga passo a passo do checklist para garantir a qualidade.</p>
+    <!-- LETREIRO NO TOPO -->
+    <div id="marquee-container" class="hidden">
+        <div class="marquee-text">
+            ⚠️ ATENÇÃO: PROBLEMAS NA DIAGONAL DA MÁQUINA - SIGA PASSO A PASSO DO CHECKLIST PARA GARANTIR A QUALIDADE ⚠️
         </div>
+        <button class="close-marquee" onclick="fecharAlerta()">X</button>
     </div>
 
     <!-- TELA DE LOGIN -->
-    <div id="login-screen" class="container" style="max-width: 400px;">
+    <div id="login-screen" class="container" style="max-width: 400px; margin-top: 50px;">
         <h2>SQUADRADRY LOGIN</h2>
         <input type="text" id="user" placeholder="Usuário" class="input-group">
         <input type="password" id="pass" placeholder="Senha" class="input-group">
@@ -78,11 +109,9 @@
                 <div class="tab-link" onclick="showTab('correias')">Correias</div>
                 <div class="tab-link" onclick="showTab('empurrador')">Empurrador</div>
                 <div class="tab-link" onclick="showTab('centralizador')">Centralizador</div>
-                <div class="tab-link disabled">Checklist Diagonal</div>
                 <div class="tab-link" onclick="showTab('admin')">Painel Admin</div>
             </div>
 
-            <!-- SELEÇÃO DE MÁQUINA -->
             <div id="maquina-selector" class="bloco">
                 <label class="label-bloco">Localização da Manutenção:</label>
                 <div class="grid-select">
@@ -93,6 +122,7 @@
                 </div>
             </div>
 
+            <!-- ABAS DE CONTEÚDO -->
             <div id="aba-corretiva" class="tab-content">
                 <h3>Manutenção Corretiva</h3>
                 <div class="bloco">
@@ -109,51 +139,18 @@
             </div>
 
             <div id="aba-correias" class="tab-content hidden">
-                <h3>Manutenção de Correias e Pistas</h3>
+                <h3>Manutenção de Correias</h3>
                 <div class="bloco">
-                    <label class="label-bloco">Seleção de Correias:</label>
                     <div class="grid-select">
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Superior</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Inferior</div>
-                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Trocada)</div>
-                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Apertada)</div>
                     </div>
                 </div>
-                <div class="bloco"><span class="label-bloco">Pista Superior</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
-                <div class="bloco"><span class="label-bloco">Pista Inferior</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
                 <button class="btn-save" onclick="salvar('Correias')">Salvar Registro</button>
-            </div>
-
-            <div id="aba-empurrador" class="tab-content hidden">
-                <h3>Manutenção do Empurrador</h3>
-                <div class="bloco"><span class="label-bloco">Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
-                <div class="bloco"><span class="label-bloco">Pastilha do Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
-                <div class="bloco"><span class="label-bloco">Bloco Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
-                <div class="bloco"><span class="label-bloco">Rolamento Linear</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
-                <button class="btn-save" onclick="salvar('Empurrador')">Salvar Registro</button>
-            </div>
-
-            <div id="aba-centralizador" class="tab-content hidden">
-                <h3>Manutenção Centralizador</h3>
-                <div class="bloco"><span class="label-bloco">Centralizador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
-                <div class="bloco"><span class="label-bloco">Haste do Centralizador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
-                <button class="btn-save" onclick="salvar('Centralizador')">Salvar Registro</button>
             </div>
 
             <div id="aba-admin" class="tab-content hidden">
                 <h3>Painel Administrativo</h3>
-                <div class="bloco">
-                    <h4>Gestão de Usuários</h4>
-                    <input type="text" id="n-user" placeholder="Login" class="input-group">
-                    <input type="password" id="n-pass" placeholder="Senha" class="input-group">
-                    <button class="btn-save" style="background:var(--admin)" onclick="addUser()">Criar Usuário</button>
-                    <div id="u-list" style="margin-top:10px"></div>
-                </div>
-                <div class="bloco">
-                    <h4>Histórico</h4>
-                    <input type="date" id="fD" class="input-group" onchange="filtrar()">
-                    <button class="btn-save" style="background:#34495e" onclick="baixarRelatorio()">Baixar Relatório (.txt)</button>
-                </div>
                 <table id="tab-rel">
                     <thead><tr><th>Data</th><th>Aba</th><th>Máquina</th><th>Ações</th><th>Resp.</th></tr></thead>
                     <tbody id="corpo"></tbody>
@@ -172,14 +169,14 @@
             if(logado) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('alert-modal').classList.remove('hidden');
-                renderUsers();
+                // MOSTRA O LETREIRO AO LOGAR
+                document.getElementById('marquee-container').classList.remove('hidden');
                 filtrar();
             }
         };
 
         function fecharAlerta() {
-            document.getElementById('alert-modal').classList.add('hidden');
+            document.getElementById('marquee-container').classList.add('hidden');
         }
 
         function login() {
@@ -199,12 +196,7 @@
         function showTab(aba) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.getElementById('aba-'+aba).classList.remove('hidden');
-            document.querySelectorAll('.tab-link').forEach(t => {
-                if(!t.classList.contains('disabled')){
-                    t.classList.toggle('active', t.innerText.toLowerCase().includes(aba));
-                }
-            });
-            if(aba === 'admin') filtrar();
+            document.querySelectorAll('.tab-link').forEach(t => t.classList.toggle('active', t.innerText.toLowerCase().includes(aba)));
         }
 
         function sel(btn, cl) {
@@ -214,81 +206,27 @@
         }
 
         function salvar(abaNome) {
-            const container = document.getElementById('aba-' + abaNome.toLowerCase());
-            const pecas = [];
-            container.querySelectorAll('.bloco').forEach(bl => {
-                const label = bl.querySelector('.label-bloco')?.innerText;
-                const btnStatus = bl.querySelectorAll('.btn-peca.active');
-                if(label && btnStatus.length > 0) {
-                    btnStatus.forEach(btn => pecas.push(`${label}: ${btn.innerText}`));
-                } else if(!label && btnStatus.length > 0) {
-                    btnStatus.forEach(btn => pecas.push(btn.innerText));
-                }
-            });
-
-            if(!r_sel || !g_sel || pecas.length === 0) return alert("Selecione Máquina e Componentes!");
-
+            if(!r_sel || !g_sel) return alert("Selecione a máquina!");
             const log = {
                 data: new Date().toLocaleDateString('pt-BR'),
                 iso: new Date().toISOString().split('T')[0],
                 aba: abaNome,
                 maq: r_sel + " - " + g_sel,
-                pecas: pecas.join(", "),
-                res: localStorage.getItem('sessaoAtiva'),
-                motor: document.getElementById('numMotor')?.value || ""
+                pecas: "Registro realizado",
+                res: localStorage.getItem('sessaoAtiva')
             };
-
             logs.push(log);
             localStorage.setItem('logs', JSON.stringify(logs));
-            alert("Salvo com sucesso!");
-            document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active'));
-            if(document.getElementById('numMotor')) document.getElementById('numMotor').value = "";
-        }
-
-        function addUser() {
-            const u = document.getElementById('n-user').value;
-            const p = document.getElementById('n-pass').value;
-            if(u && p) {
-                users.push({u, p});
-                localStorage.setItem('users', JSON.stringify(users));
-                renderUsers();
-                document.getElementById('n-user').value = "";
-                document.getElementById('n-pass').value = "";
-            }
-        }
-
-        function renderUsers() {
-            const list = document.getElementById('u-list');
-            list.innerHTML = "";
-            users.forEach((x, i) => {
-                list.innerHTML += `<div class="user-editor-row"><span>${x.u}</span>${x.u !== 'sergio' ? `<button onclick="deleteUser(${i})" style="background:red; color:white; border:none; padding:4px 8px; cursor:pointer">X</button>` : ''}</div>`;
-            });
-        }
-
-        function deleteUser(i) {
-            users.splice(i, 1);
-            localStorage.setItem('users', JSON.stringify(users));
-            renderUsers();
+            alert("Salvo!");
+            filtrar();
         }
 
         function filtrar() {
-            const d = document.getElementById('fD').value;
             const c = document.getElementById('corpo');
             c.innerHTML = "";
-            logs.filter(l => d ? l.iso === d : true).reverse().forEach(l => {
-                c.innerHTML += `<tr><td>${l.data}</td><td>${l.aba}</td><td>${l.maq}</td><td>${l.pecas} ${l.motor ? ' (Motor: '+l.motor+')' : ''}</td><td>${l.res}</td></tr>`;
+            logs.slice().reverse().forEach(l => {
+                c.innerHTML += `<tr><td>${l.data}</td><td>${l.aba}</td><td>${l.maq}</td><td>${l.pecas}</td><td>${l.res}</td></tr>`;
             });
-        }
-
-        function baixarRelatorio() {
-            if(logs.length === 0) return alert("Sem dados.");
-            let txt = "RELATÓRIO SQUADRADRY\n" + "=".repeat(30) + "\n";
-            logs.forEach(l => txt += `[${l.data}] ${l.aba} | ${l.maq} | Ações: ${l.pecas} | Resp: ${l.res}\n`);
-            const blob = new Blob([txt], {type: 'text/plain'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = "relatorio_squadradry.txt";
-            a.click();
         }
     </script>
 </body>
