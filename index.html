@@ -28,10 +28,12 @@
         .btn-save { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; float: right; border-radius: 4px; cursor: pointer; }
 
-        /* Estilo do Alerta de Atenção */
+        /* Estilo do Alerta com o botão X */
         #alert-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 450px; border-top: 10px solid var(--danger); }
-        .modal-content h1 { color: var(--danger); margin-bottom: 15px; }
+        .modal-content { background: white; padding: 40px 30px; border-radius: 15px; text-align: center; max-width: 450px; border-top: 10px solid var(--danger); position: relative; }
+        .close-x { position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; color: #999; cursor: pointer; line-height: 1; }
+        .close-x:hover { color: var(--danger); }
+        .modal-content h1 { color: var(--danger); margin-bottom: 15px; font-size: 32px; }
         .modal-content p { font-size: 18px; color: #333; line-height: 1.5; font-weight: bold; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; background: white; }
@@ -49,13 +51,13 @@
 </head>
 <body>
 
-    <!-- ALERTA DE ATENÇÃO (MODAL) -->
+    <!-- ALERTA DE ATENÇÃO -->
     <div id="alert-modal" class="hidden">
         <div class="modal-content">
+            <span class="close-x" onclick="fecharAlerta()">&times;</span>
             <h1>⚠️ ATENÇÃO!</h1>
             <p>Problemas na diagonal da máquina detectados.</p>
             <p>Siga passo a passo do checklist para garantir a qualidade.</p>
-            <button class="btn-save" onclick="fecharAlerta()">Entendido / Prosseguir</button>
         </div>
     </div>
 
@@ -91,7 +93,6 @@
                 </div>
             </div>
 
-            <!-- ABAS DE CONTEÚDO (AS MESMAS ANTERIORES) -->
             <div id="aba-corretiva" class="tab-content">
                 <h3>Manutenção Corretiva</h3>
                 <div class="bloco">
@@ -118,14 +119,8 @@
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Apertada)</div>
                     </div>
                 </div>
-                <div class="bloco">
-                    <span class="label-bloco">Pista Superior</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
-                <div class="bloco">
-                    <span class="label-bloco">Pista Inferior</span>
-                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
-                </div>
+                <div class="bloco"><span class="label-bloco">Pista Superior</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Pista Inferior</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
                 <button class="btn-save" onclick="salvar('Correias')">Salvar Registro</button>
             </div>
 
@@ -177,7 +172,6 @@
             if(logado) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                // DISPARA O ALERTA AO ENTRAR
                 document.getElementById('alert-modal').classList.remove('hidden');
                 renderUsers();
                 filtrar();
@@ -222,7 +216,6 @@
         function salvar(abaNome) {
             const container = document.getElementById('aba-' + abaNome.toLowerCase());
             const pecas = [];
-            
             container.querySelectorAll('.bloco').forEach(bl => {
                 const label = bl.querySelector('.label-bloco')?.innerText;
                 const btnStatus = bl.querySelectorAll('.btn-peca.active');
