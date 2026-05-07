@@ -8,6 +8,7 @@
         :root {
             --primary: #2c3e50; --accent: #3498db; --success: #27ae60;
             --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c; --warning: #f39c12;
+            --disabled: #bdc3c7;
         }
 
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
@@ -27,6 +28,12 @@
         .btn-save { background: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; float: right; border-radius: 4px; cursor: pointer; }
 
+        /* Estilo do Alerta de Atenção */
+        #alert-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 450px; border-top: 10px solid var(--danger); }
+        .modal-content h1 { color: var(--danger); margin-bottom: 15px; }
+        .modal-content p { font-size: 18px; color: #333; line-height: 1.5; font-weight: bold; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; background: white; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: var(--primary); color: white; }
@@ -35,11 +42,22 @@
         .nav-tabs { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
         .tab-link { padding: 8px 12px; background: #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
         .tab-link.active { background: var(--accent); color: white; }
-        
+        .tab-link.disabled { background: var(--disabled); color: #7f8c8d; cursor: not-allowed; opacity: 0.7; }
+
         .user-editor-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px; border: 1px solid #eee; margin-top: 5px; border-radius: 5px; }
     </style>
 </head>
 <body>
+
+    <!-- ALERTA DE ATENÇÃO (MODAL) -->
+    <div id="alert-modal" class="hidden">
+        <div class="modal-content">
+            <h1>⚠️ ATENÇÃO!</h1>
+            <p>Problemas na diagonal da máquina detectados.</p>
+            <p>Siga passo a passo do checklist para garantir a qualidade.</p>
+            <button class="btn-save" onclick="fecharAlerta()">Entendido / Prosseguir</button>
+        </div>
+    </div>
 
     <!-- TELA DE LOGIN -->
     <div id="login-screen" class="container" style="max-width: 400px;">
@@ -58,10 +76,11 @@
                 <div class="tab-link" onclick="showTab('correias')">Correias</div>
                 <div class="tab-link" onclick="showTab('empurrador')">Empurrador</div>
                 <div class="tab-link" onclick="showTab('centralizador')">Centralizador</div>
+                <div class="tab-link disabled">Checklist Diagonal</div>
                 <div class="tab-link" onclick="showTab('admin')">Painel Admin</div>
             </div>
 
-            <!-- SELEÇÃO DE MÁQUINA (FIXA PARA TODAS AS ABAS) -->
+            <!-- SELEÇÃO DE MÁQUINA -->
             <div id="maquina-selector" class="bloco">
                 <label class="label-bloco">Localização da Manutenção:</label>
                 <div class="grid-select">
@@ -72,7 +91,7 @@
                 </div>
             </div>
 
-            <!-- 1. CORRETIVA -->
+            <!-- ABAS DE CONTEÚDO (AS MESMAS ANTERIORES) -->
             <div id="aba-corretiva" class="tab-content">
                 <h3>Manutenção Corretiva</h3>
                 <div class="bloco">
@@ -88,7 +107,6 @@
                 <button class="btn-save" onclick="salvar('Corretiva')">Salvar Registro</button>
             </div>
 
-            <!-- 2. CORREIAS -->
             <div id="aba-correias" class="tab-content hidden">
                 <h3>Manutenção de Correias e Pistas</h3>
                 <div class="bloco">
@@ -100,7 +118,6 @@
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Apertada)</div>
                     </div>
                 </div>
-                <!-- NOVOS BLOCOS DE PISTA -->
                 <div class="bloco">
                     <span class="label-bloco">Pista Superior</span>
                     <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
@@ -112,7 +129,6 @@
                 <button class="btn-save" onclick="salvar('Correias')">Salvar Registro</button>
             </div>
 
-            <!-- 3. EMPURRADOR -->
             <div id="aba-empurrador" class="tab-content hidden">
                 <h3>Manutenção do Empurrador</h3>
                 <div class="bloco"><span class="label-bloco">Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
@@ -122,7 +138,6 @@
                 <button class="btn-save" onclick="salvar('Empurrador')">Salvar Registro</button>
             </div>
 
-            <!-- 4. CENTRALIZADOR -->
             <div id="aba-centralizador" class="tab-content hidden">
                 <h3>Manutenção Centralizador</h3>
                 <div class="bloco"><span class="label-bloco">Centralizador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
@@ -130,7 +145,6 @@
                 <button class="btn-save" onclick="salvar('Centralizador')">Salvar Registro</button>
             </div>
 
-            <!-- 5. ADMIN -->
             <div id="aba-admin" class="tab-content hidden">
                 <h3>Painel Administrativo</h3>
                 <div class="bloco">
@@ -141,7 +155,7 @@
                     <div id="u-list" style="margin-top:10px"></div>
                 </div>
                 <div class="bloco">
-                    <h4>Relatórios e Histórico</h4>
+                    <h4>Histórico</h4>
                     <input type="date" id="fD" class="input-group" onchange="filtrar()">
                     <button class="btn-save" style="background:#34495e" onclick="baixarRelatorio()">Baixar Relatório (.txt)</button>
                 </div>
@@ -163,17 +177,23 @@
             if(logado) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
+                // DISPARA O ALERTA AO ENTRAR
+                document.getElementById('alert-modal').classList.remove('hidden');
                 renderUsers();
                 filtrar();
             }
         };
+
+        function fecharAlerta() {
+            document.getElementById('alert-modal').classList.add('hidden');
+        }
 
         function login() {
             const u = document.getElementById('user').value;
             const s = document.getElementById('pass').value;
             if(users.find(x => x.u === u && x.p === s)) {
                 localStorage.setItem('sessaoAtiva', u);
-                location.reload();
+                location.reload(); 
             } else { alert("Usuário ou senha inválidos."); }
         }
 
@@ -186,7 +206,9 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.getElementById('aba-'+aba).classList.remove('hidden');
             document.querySelectorAll('.tab-link').forEach(t => {
-                t.classList.toggle('active', t.innerText.toLowerCase().includes(aba));
+                if(!t.classList.contains('disabled')){
+                    t.classList.toggle('active', t.innerText.toLowerCase().includes(aba));
+                }
             });
             if(aba === 'admin') filtrar();
         }
@@ -204,7 +226,6 @@
             container.querySelectorAll('.bloco').forEach(bl => {
                 const label = bl.querySelector('.label-bloco')?.innerText;
                 const btnStatus = bl.querySelectorAll('.btn-peca.active');
-                
                 if(label && btnStatus.length > 0) {
                     btnStatus.forEach(btn => pecas.push(`${label}: ${btn.innerText}`));
                 } else if(!label && btnStatus.length > 0) {
