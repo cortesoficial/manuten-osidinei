@@ -61,7 +61,7 @@
                 <div class="tab-link" onclick="showTab('admin')">Painel Admin</div>
             </div>
 
-            <!-- SELEÇÃO DE MÁQUINA -->
+            <!-- SELEÇÃO DE MÁQUINA (FIXA PARA TODAS AS ABAS) -->
             <div id="maquina-selector" class="bloco">
                 <label class="label-bloco">Localização da Manutenção:</label>
                 <div class="grid-select">
@@ -90,14 +90,24 @@
 
             <!-- 2. CORREIAS -->
             <div id="aba-correias" class="tab-content hidden">
-                <h3>Manutenção de Correias</h3>
+                <h3>Manutenção de Correias e Pistas</h3>
                 <div class="bloco">
+                    <label class="label-bloco">Seleção de Correias:</label>
                     <div class="grid-select">
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Superior</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Inferior</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Trocada)</div>
                         <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Apertada)</div>
                     </div>
+                </div>
+                <!-- NOVOS BLOCOS DE PISTA -->
+                <div class="bloco">
+                    <span class="label-bloco">Pista Superior</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <div class="bloco">
+                    <span class="label-bloco">Pista Inferior</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
                 </div>
                 <button class="btn-save" onclick="salvar('Correias')">Salvar Registro</button>
             </div>
@@ -144,12 +154,10 @@
     </div>
 
     <script>
-        // Memória do Sistema
         let users = JSON.parse(localStorage.getItem('users')) || [{u:'sergio', p:'sergio'}];
         let logs = JSON.parse(localStorage.getItem('logs')) || [];
         let r_sel = "", g_sel = "";
 
-        // Manter conectado ao atualizar
         window.onload = function() {
             const logado = localStorage.getItem('sessaoAtiva');
             if(logado) {
@@ -195,9 +203,13 @@
             
             container.querySelectorAll('.bloco').forEach(bl => {
                 const label = bl.querySelector('.label-bloco')?.innerText;
-                const btnStatus = bl.querySelector('.btn-peca.active');
-                if(label && btnStatus) pecas.push(`${label}: ${btnStatus.innerText}`);
-                else if(!label && btnStatus) pecas.push(btnStatus.innerText);
+                const btnStatus = bl.querySelectorAll('.btn-peca.active');
+                
+                if(label && btnStatus.length > 0) {
+                    btnStatus.forEach(btn => pecas.push(`${label}: ${btn.innerText}`));
+                } else if(!label && btnStatus.length > 0) {
+                    btnStatus.forEach(btn => pecas.push(btn.innerText));
+                }
             });
 
             if(!r_sel || !g_sel || pecas.length === 0) return alert("Selecione Máquina e Componentes!");
