@@ -7,7 +7,7 @@
     <style>
         :root {
             --primary: #2c3e50; --accent: #3498db; --success: #27ae60;
-            --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c;
+            --admin: #8e44ad; --bg: #f4f7f6; --danger: #e74c3c; --warning: #f39c12;
             --disabled: #bdc3c7;
         }
 
@@ -36,6 +36,11 @@
         .nav-tabs { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
         .tab-link { padding: 8px 12px; background: #ddd; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
         .tab-link.active { background: var(--accent); color: white; }
+        
+        /* Estilo para aba desabilitada */
+        .tab-link.disabled { background: var(--disabled); color: #7f8c8d; cursor: not-allowed; opacity: 0.7; }
+
+        .user-editor-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px; border: 1px solid #eee; margin-top: 5px; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -57,9 +62,11 @@
                 <div class="tab-link" onclick="showTab('correias')">Correias</div>
                 <div class="tab-link" onclick="showTab('empurrador')">Empurrador</div>
                 <div class="tab-link" onclick="showTab('centralizador')">Centralizador</div>
+                <div class="tab-link disabled">Checklist Diagonal</div> <!-- Aba não selecionável -->
                 <div class="tab-link" onclick="showTab('admin')">Painel Admin</div>
             </div>
 
+            <!-- SELEÇÃO DE MÁQUINA -->
             <div id="maquina-selector" class="bloco">
                 <label class="label-bloco">Localização da Manutenção:</label>
                 <div class="grid-select">
@@ -70,7 +77,7 @@
                 </div>
             </div>
 
-            <!-- CONTEÚDO CORRETIVA -->
+            <!-- 1. CORRETIVA -->
             <div id="aba-corretiva" class="tab-content">
                 <h3>Manutenção Corretiva</h3>
                 <div class="bloco">
@@ -86,9 +93,62 @@
                 <button class="btn-save" onclick="salvar('Corretiva')">Salvar Registro</button>
             </div>
 
-            <!-- PAINEL ADMIN -->
+            <!-- 2. CORREIAS -->
+            <div id="aba-correias" class="tab-content hidden">
+                <h3>Manutenção de Correias e Pistas</h3>
+                <div class="bloco">
+                    <label class="label-bloco">Seleção de Correias:</label>
+                    <div class="grid-select">
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Superior</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Inferior</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Trocada)</div>
+                        <div class="btn-opt btn-peca" onclick="this.classList.toggle('active')">Correia Empurrador (Apertada)</div>
+                    </div>
+                </div>
+                <div class="bloco">
+                    <span class="label-bloco">Pista Superior</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <div class="bloco">
+                    <span class="label-bloco">Pista Inferior</span>
+                    <button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button>
+                </div>
+                <button class="btn-save" onclick="salvar('Correias')">Salvar Registro</button>
+            </div>
+
+            <!-- 3. EMPURRADOR -->
+            <div id="aba-empurrador" class="tab-content hidden">
+                <h3>Manutenção do Empurrador</h3>
+                <div class="bloco"><span class="label-bloco">Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Pastilha do Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Bloco Empurrador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Rolamento Linear</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <button class="btn-save" onclick="salvar('Empurrador')">Salvar Registro</button>
+            </div>
+
+            <!-- 4. CENTRALIZADOR -->
+            <div id="aba-centralizador" class="tab-content hidden">
+                <h3>Manutenção Centralizador</h3>
+                <div class="bloco"><span class="label-bloco">Centralizador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <div class="bloco"><span class="label-bloco">Haste do Centralizador</span><button class="btn-opt btn-peca" style="width:100%" onclick="this.classList.toggle('active')">Substituído</button></div>
+                <button class="btn-save" onclick="salvar('Centralizador')">Salvar Registro</button>
+            </div>
+
+            <!-- 5. ADMIN -->
             <div id="aba-admin" class="tab-content hidden">
-                <h3>Histórico de Registros</h3>
+                <h3>Painel Administrativo</h3>
+                <div class="bloco">
+                    <h4>Gestão de Usuários</h4>
+                    <input type="text" id="n-user" placeholder="Login" class="input-group">
+                    <input type="password" id="n-pass" placeholder="Senha" class="input-group">
+                    <button class="btn-save" style="background:var(--admin)" onclick="addUser()">Criar Usuário</button>
+                    <div id="u-list" style="margin-top:10px"></div>
+                </div>
+                <div class="bloco">
+                    <h4>Relatórios e Histórico</h4>
+                    <input type="date" id="fD" class="input-group" onchange="filtrar()">
+                    <button class="btn-save" style="background:#34495e" onclick="baixarRelatorio()">Baixar Relatório (.txt)</button>
+                </div>
                 <table id="tab-rel">
                     <thead><tr><th>Data</th><th>Aba</th><th>Máquina</th><th>Ações</th><th>Resp.</th></tr></thead>
                     <tbody id="corpo"></tbody>
@@ -103,9 +163,11 @@
         let r_sel = "", g_sel = "";
 
         window.onload = function() {
-            if(localStorage.getItem('sessaoAtiva')) {
+            const logado = localStorage.getItem('sessaoAtiva');
+            if(logado) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
+                renderUsers();
                 filtrar();
             }
         };
@@ -115,8 +177,8 @@
             const s = document.getElementById('pass').value;
             if(users.find(x => x.u === u && x.p === s)) {
                 localStorage.setItem('sessaoAtiva', u);
-                location.reload(); 
-            } else { alert("Acesso negado."); }
+                location.reload();
+            } else { alert("Usuário ou senha inválidos."); }
         }
 
         function logout() {
@@ -126,8 +188,13 @@
 
         function showTab(aba) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            if(document.getElementById('aba-'+aba)) document.getElementById('aba-'+aba).classList.remove('hidden');
-            document.querySelectorAll('.tab-link').forEach(t => t.classList.toggle('active', t.innerText.toLowerCase().includes(aba)));
+            document.getElementById('aba-'+aba).classList.remove('hidden');
+            document.querySelectorAll('.tab-link').forEach(t => {
+                if(!t.classList.contains('disabled')){
+                    t.classList.toggle('active', t.innerText.toLowerCase().includes(aba));
+                }
+            });
+            if(aba === 'admin') filtrar();
         }
 
         function sel(btn, cl) {
@@ -137,26 +204,83 @@
         }
 
         function salvar(abaNome) {
-            if(!r_sel || !g_sel) return alert("Selecione a máquina.");
+            const container = document.getElementById('aba-' + abaNome.toLowerCase());
+            const pecas = [];
+            
+            container.querySelectorAll('.bloco').forEach(bl => {
+                const label = bl.querySelector('.label-bloco')?.innerText;
+                const btnStatus = bl.querySelectorAll('.btn-peca.active');
+                
+                if(label && btnStatus.length > 0) {
+                    btnStatus.forEach(btn => pecas.push(`${label}: ${btn.innerText}`));
+                } else if(!label && btnStatus.length > 0) {
+                    btnStatus.forEach(btn => pecas.push(btn.innerText));
+                }
+            });
+
+            if(!r_sel || !g_sel || pecas.length === 0) return alert("Selecione Máquina e Componentes!");
+
             const log = {
                 data: new Date().toLocaleDateString('pt-BR'),
+                iso: new Date().toISOString().split('T')[0],
                 aba: abaNome,
                 maq: r_sel + " - " + g_sel,
-                pecas: "Manutenção Realizada",
-                res: localStorage.getItem('sessaoAtiva')
+                pecas: pecas.join(", "),
+                res: localStorage.getItem('sessaoAtiva'),
+                motor: document.getElementById('numMotor')?.value || ""
             };
+
             logs.push(log);
             localStorage.setItem('logs', JSON.stringify(logs));
             alert("Salvo com sucesso!");
-            filtrar();
+            document.querySelectorAll('.btn-peca').forEach(b => b.classList.remove('active'));
+            if(document.getElementById('numMotor')) document.getElementById('numMotor').value = "";
+        }
+
+        function addUser() {
+            const u = document.getElementById('n-user').value;
+            const p = document.getElementById('n-pass').value;
+            if(u && p) {
+                users.push({u, p});
+                localStorage.setItem('users', JSON.stringify(users));
+                renderUsers();
+                document.getElementById('n-user').value = "";
+                document.getElementById('n-pass').value = "";
+            }
+        }
+
+        function renderUsers() {
+            const list = document.getElementById('u-list');
+            list.innerHTML = "";
+            users.forEach((x, i) => {
+                list.innerHTML += `<div class="user-editor-row"><span>${x.u}</span>${x.u !== 'sergio' ? `<button onclick="deleteUser(${i})" style="background:red; color:white; border:none; padding:4px 8px; cursor:pointer">X</button>` : ''}</div>`;
+            });
+        }
+
+        function deleteUser(i) {
+            users.splice(i, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUsers();
         }
 
         function filtrar() {
+            const d = document.getElementById('fD').value;
             const c = document.getElementById('corpo');
             c.innerHTML = "";
-            logs.slice().reverse().forEach(l => {
-                c.innerHTML += `<tr><td>${l.data}</td><td>${l.aba}</td><td>${l.maq}</td><td>${l.pecas}</td><td>${l.res}</td></tr>`;
+            logs.filter(l => d ? l.iso === d : true).reverse().forEach(l => {
+                c.innerHTML += `<tr><td>${l.data}</td><td>${l.aba}</td><td>${l.maq}</td><td>${l.pecas} ${l.motor ? ' (Motor: '+l.motor+')' : ''}</td><td>${l.res}</td></tr>`;
             });
+        }
+
+        function baixarRelatorio() {
+            if(logs.length === 0) return alert("Sem dados.");
+            let txt = "RELATÓRIO SQUADRADRY\n" + "=".repeat(30) + "\n";
+            logs.forEach(l => txt += `[${l.data}] ${l.aba} | ${l.maq} | Ações: ${l.pecas} | Resp: ${l.res}\n`);
+            const blob = new Blob([txt], {type: 'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "relatorio_squadradry.txt";
+            a.click();
         }
     </script>
 </body>
